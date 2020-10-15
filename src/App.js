@@ -1,26 +1,45 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
+import { ThemeProvider } from "@material-ui/core";
+import GlobalStyles from "./components/general/GlobalStyle";
+import theme from "./components/theme";
+import MainLayout from "./container/App/MainLayout";
+import DashBaord from "./container/App/DashBaord";
 
-function App() {
+const App = () => {
+  const isAuth = true;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <ThemeProvider theme={theme}>
+        <GlobalStyles />
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={() => {
+              return isAuth ? (
+                <Redirect to="/home" />
+              ) : (
+                <Redirect to="/auth/login" />
+              );
+            }}
+          />
+          <Route path="/auth" render={(props) => <MainLayout {...props} />} />
+          <Route path="/admin" render={(props) => <DashBaord {...props} />} />
+          <Route path="*">
+            {" "}
+            <Redirect to="/404" />{" "}
+          </Route>
+        </Switch>
+      </ThemeProvider>
+    </Router>
   );
-}
+};
 
 export default App;
